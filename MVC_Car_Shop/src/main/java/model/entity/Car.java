@@ -8,15 +8,17 @@ import java.sql.Timestamp;
 
 public class Car extends Vehicle {
 
+    // Attributes specific to Car entity
     public String manufacturer;
     public String model;
     public FuelType fuelType;
     public int horsepower;
-    private static int nextId = 0; // Static counter variable for assigning unique IDs
 
     public Car(int id, String manufacturer, String model, long price, Timestamp productionDate, FuelType fuelType, int horsepower) {
+        // Call superclass constructor to initialize common attributes
         super(id, productionDate, price);
-        this.id = nextId++;
+        // Assign the provided ID directly
+        this.id = id;
         this.manufacturer = manufacturer;
         this.model = model;
         this.fuelType = fuelType;

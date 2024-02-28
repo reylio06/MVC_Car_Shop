@@ -17,10 +17,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CarShopView {
+    // Controller for managing car data
     private final CarController carController;
     private final Scanner scanner;
+    // Date format for parsing and formatting dates
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
+    // Constructor to initialize CarShopView with a CarController
     public CarShopView(CarController carController) {
         this.carController = carController;
         this.scanner = new Scanner(System.in);
@@ -43,6 +46,7 @@ public class CarShopView {
         try {
             int choice;
             do {
+                // Variables for storing car details
                 String manufacturer;
                 String model;
                 long price;
@@ -50,13 +54,27 @@ public class CarShopView {
                 Timestamp productionDate;
                 FuelType fuelType;
                 int horsepower;
+
                 displayMenu();
                 System.out.println("Enter your choice: ");
                 choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
+                // Consume newline
+                scanner.nextLine();
+
                 switch (choice) {
+
                     case 1:
                         // Add a new car
+                        System.out.println("Enter ID of the vehicle:");
+                        int vehicleID = scanner.nextInt();
+                        scanner.nextLine();
+
+                        // Check if car with specified ID already exists
+                        if (carController.getCarDetailsById(vehicleID) != null) {
+                            System.out.println("A car with ID " + vehicleID + " already exists. Please choose another index.");
+                            break;
+                        }
+
                         System.out.println("Enter car details:");
                         System.out.print("Manufacturer: ");
                         manufacturer = scanner.nextLine();
@@ -64,99 +82,142 @@ public class CarShopView {
                         model = scanner.nextLine();
                         System.out.print("Price: ");
                         price = scanner.nextLong();
-                        System.out.print("Production Date (DD.MM.YYYY): "); // Modify prompt
+
+                        System.out.print("Production Date (DD.MM.YYYY): ");
                         scanner.nextLine(); // Consume newline character
                         productionDateString = scanner.nextLine();
                         try {
                             Date parsedDate = DATE_FORMAT.parse(productionDateString);
-                            productionDate = new Timestamp(parsedDate.getTime());
+                            Timestamp parsedTimestamp = new Timestamp(parsedDate.getTime());
+
+                            // Check if the parsed production date is in the future
+                            if (parsedTimestamp.after(new Timestamp(System.currentTimeMillis()))) {
+                                throw new BusinessException("Production date cannot be in the future. Please enter a valid date.", "addCar");
+                            }
+
+                            productionDate = parsedTimestamp;
                         } catch (ParseException e) {
                             System.out.println("Invalid date format. Please use the format DD.MM.YYYY.");
-                            continue; // Continue to the next iteration of the loop
+                            break;
                         }
+
                         System.out.print("Fuel Type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
                         fuelType = FuelType.valueOf(scanner.nextLine().toUpperCase());
                         System.out.print("Horsepower: ");
                         horsepower = scanner.nextInt();
-                        Car newCar = new Car(0, manufacturer, model, price, productionDate, fuelType, horsepower);
+
+                        Car newCar = new Car(vehicleID, manufacturer, model, price, productionDate, fuelType, horsepower);
                         carController.addCar(newCar);
                         System.out.println("New car added successfully.");
+
                         break;
+
                     case 2:
                         // Update a car
                         System.out.println("Enter car ID to update:");
                         int carIdToUpdate = scanner.nextInt();
                         scanner.nextLine(); // Consume newline
                         CarDetailDTO carToUpdate = carController.getCarDetailsById(carIdToUpdate);
+
                         if (carToUpdate != null) {
+                            // Initialize with current values
                             manufacturer = carToUpdate.getManufacturer();
-                            model = carToUpdate.getModel(); // Initialize with current values
-                            price = carToUpdate.getPrice(); // Initialize with current values
-                            productionDate = carToUpdate.getProductionDate(); // Initialize with current values
-                            fuelType = carToUpdate.getFuelType(); // Initialize with current values
-                            horsepower = carToUpdate.getHorsepower(); // Initialize with current values
+                            model = carToUpdate.getModel();
+                            price = carToUpdate.getPrice();
+                            productionDate = carToUpdate.getProductionDate();
+                            fuelType = carToUpdate.getFuelType();
+                            horsepower = carToUpdate.getHorsepower();
+                            int newCarId = carIdToUpdate;
 
                             System.out.println("Enter field to update:");
-                            System.out.println("1. Manufacturer");
-                            System.out.println("2. Model");
-                            System.out.println("3. Price");
-                            System.out.println("4. Production Date");
-                            System.out.println("5. Fuel Type");
-                            System.out.println("6. Horsepower");
+                            System.out.println("1. ID");
+                            System.out.println("2. Manufacturer");
+                            System.out.println("3. Model");
+                            System.out.println("4. Price");
+                            System.out.println("5. Production Date");
+                            System.out.println("6. Fuel Type");
+                            System.out.println("7. Horsepower");
                             System.out.print("Enter your choice: ");
                             int fieldChoice = scanner.nextInt();
                             scanner.nextLine(); // Consume newline character
+
                             switch (fieldChoice) {
                                 case 1:
+                                    System.out.print("Enter new ID: ");
+                                    int newId = scanner.nextInt();
+                                    // Consume newline
+                                    scanner.nextLine();
+
+                                    if (carController.getCarDetailsById(newId) != null) {
+                                        throw new BusinessException("A car with ID " + newId + " already exists. Please choose another ID.", "updateCar");
+                                    }
+
+                                    // Update carIdToUpdate with the new ID
+                                    newCarId = newId;
+                                    break;
+
+                                case 2:
                                     System.out.print("Enter new manufacturer: ");
                                     manufacturer = scanner.nextLine();
                                     break;
-                                case 2:
+                                case 3:
                                     System.out.print("Enter new model: ");
                                     model = scanner.nextLine();
                                     break;
-                                case 3:
+                                case 4:
                                     System.out.print("Enter new price: ");
                                     price = scanner.nextLong();
                                     break;
-                                case 4:
+                                case 5:
                                     System.out.print("Enter new production date (DD.MM.YYYY): ");
                                     productionDateString = scanner.nextLine().trim(); // Trim whitespace
                                     try {
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                                        Date parsedDate = dateFormat.parse(productionDateString);
-                                        productionDate = new Timestamp(parsedDate.getTime());
+                                        Date parsedDate = DATE_FORMAT.parse(productionDateString);
+                                        Timestamp parsedTimestamp = new Timestamp(parsedDate.getTime());
+
+                                        // Check if the parsed production date is in the future
+                                        if (parsedTimestamp.after(new Timestamp(System.currentTimeMillis()))) {
+                                            throw new BusinessException("Production date cannot be in the future. Please enter a valid date.", "updateCar");
+                                        }
+
+                                        productionDate = parsedTimestamp;
                                     } catch (ParseException e) {
                                         System.out.println("Invalid date format. Please use the format DD.MM.YYYY.");
-                                        break; // Exit the switch case
+                                        break;
                                     }
-                                    break;
-                                case 5:
-                                    System.out.print("Enter new fuel type (GASOLINE, DIESEL, ELECTRIC): ");
+                                case 6:
+                                    System.out.print("Enter new fuel type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
                                     fuelType = FuelType.valueOf(scanner.nextLine().toUpperCase());
                                     break;
-                                case 6:
+                                case 7:
                                     System.out.print("Enter new horsepower: ");
                                     horsepower = scanner.nextInt();
                                     break;
                                 default:
-                                    System.out.println("Invalid choice. Please enter a number between 1 and 6.");
+                                    System.out.println("Invalid choice. Please enter a number between 1 and 7.");
                                     break;
                             }
-                            Car updatedCar = new Car(carIdToUpdate, manufacturer, model, price, productionDate, fuelType, horsepower);
-                            carController.updateCar(updatedCar);
+
+                            Car updatedCar = new Car(newCarId, manufacturer, model, price, productionDate, fuelType, horsepower);
+                            carController.updateCar(updatedCar, carIdToUpdate);
                             System.out.println("Car updated successfully.");
+
                         } else {
                             System.out.println("Car with ID " + carIdToUpdate + " not found.");
                         }
+
                         break;
                     case 3:
                         // Delete a car
                         System.out.println("Enter car ID to delete:");
                         int carIdToDelete = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
+                        // Consume newline
+                        scanner.nextLine();
+
+                        // Retrieve car details by ID
                         CarDetailDTO carToDelete = carController.getCarDetailsById(carIdToDelete);
                         if (carToDelete != null) {
+                            // Delete the car if found
                             carController.deleteCar(carIdToDelete);
                             System.out.println("Car with ID " + carIdToDelete + " deleted successfully.");
                         } else {
@@ -167,9 +228,13 @@ public class CarShopView {
                         // Get car details by ID
                         System.out.println("Enter car ID:");
                         int carId = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
+                        // Consume newline
+                        scanner.nextLine();
+
+                        // Retrieve car details by ID
                         CarDetailDTO carDetailDTO = carController.getCarDetailsById(carId);
                         if (carDetailDTO != null) {
+                            // Display car details if found
                             System.out.println("Car details: " + carDetailDTO);
                         } else {
                             System.out.println("Car with ID " + carId + " not found.");
@@ -178,10 +243,14 @@ public class CarShopView {
                     case 5:
                         // Get cars from a given manufacturer
                         System.out.print("Enter manufacturer: ");
-                        manufacturer = scanner.nextLine(); // Read manufacturer input
-                        scanner.nextLine(); // Consume newline
+                        manufacturer = scanner.nextLine();
+                        // Consume newline
+                        scanner.nextLine();
+
+                        // Retrieve cars by manufacturer
                         List<CarManufacturerDTO> carsByManufacturer = carController.getCarsByManufacturer(manufacturer);
                         if (!carsByManufacturer.isEmpty()) {
+                            // Display cars if found
                             for (CarManufacturerDTO car : carsByManufacturer) {
                                 System.out.println(car.toString());
                             }
@@ -193,9 +262,13 @@ public class CarShopView {
                         // Get cars with price lower than a given value
                         System.out.println("Enter maximum price:");
                         long maxPrice = scanner.nextLong();
-                        scanner.nextLine(); // Consume newline
+                        // Consume newline
+                        scanner.nextLine();
+
+                        // Retrieve cars with price lower than the given value
                         List<CarDTO> carsWithPriceLowerThan = carController.getCarsWithPriceLowerThan(maxPrice);
                         if (!carsWithPriceLowerThan.isEmpty()) {
+                            // Display cars if found
                             for (CarDTO car : carsWithPriceLowerThan) {
                                 System.out.println(car.toString());
                             }
@@ -206,6 +279,7 @@ public class CarShopView {
                     case 7:
                         // Get all cars
                         List<CarDTO> allCars = carController.getAllCars();
+                        // Print details of all cars
                         for (CarDTO car : allCars) {
                             System.out.println(car.toString());
                         }

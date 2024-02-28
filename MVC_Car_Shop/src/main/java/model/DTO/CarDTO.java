@@ -13,6 +13,7 @@ public class CarDTO {
         this.price = price;
     }
 
+    // Override toString method to provide a formatted string representation of the CarDTO object
     @Override
     public String toString() {
         return "Car ID: " + id +

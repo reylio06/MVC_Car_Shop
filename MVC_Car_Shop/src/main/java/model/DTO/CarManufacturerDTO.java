@@ -11,6 +11,7 @@ public class CarManufacturerDTO {
         this.price = price;
     }
 
+    // Override toString method to provide a formatted string representation of the CarManufacturerDTO object
     public String toString() {
         return "Car ID: " + id +
                 ", Model: " + model +

@@ -3,6 +3,7 @@ package model.DTO;
 import model.entity.FuelType;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class CarDetailDTO {
     int id;
@@ -23,16 +24,23 @@ public class CarDetailDTO {
         this.fuelType = fuelType;
         this.horsepower = horsepower;
     }
-    // Override toString() method to return a string representation of the car details
+
+    // Override toString method to provide a formatted string representation of the CarDetailDTO object
     @Override
     public String toString() {
         return "Car ID: " + id +
                 ", Manufacturer: " + manufacturer +
                 ", Model: " + model +
                 ", Price (€): " + price +
-                ", Production Date: " + productionDate +
+                ", Production Date: " + getFormattedProductionDate() +
                 ", Fuel Type: " + fuelType +
                 ", Horsepower: " + horsepower;
+    }
+
+    // Method to return the production date in a formatted string
+    public String getFormattedProductionDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        return dateFormat.format(this.productionDate);
     }
 
     public String getManufacturer() {
