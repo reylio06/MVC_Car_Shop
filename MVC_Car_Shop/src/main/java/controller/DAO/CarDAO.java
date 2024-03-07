@@ -19,7 +19,7 @@ public class CarDAO {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
     // Read cars from CSV file
-    public static List<Car> readCars() throws BusinessException {
+    public List<Car> readCars() throws BusinessException {
         List<Car> cars = new ArrayList<>();
         File file = new File(CSV_FILE_PATH);
 
@@ -53,7 +53,7 @@ public class CarDAO {
     }
 
     // Write cars to CSV file
-    public static void writeCars(List<Car> cars) throws BusinessException {
+    public void writeCars(List<Car> cars) throws BusinessException {
         File file = new File(CSV_FILE_PATH);
         File parentDirectory = file.getParentFile();
 
@@ -72,10 +72,10 @@ public class CarDAO {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(CSV_FILE_PATH))) {
             for (Car car : cars) {
                 // Format the production date as a string
-                String productionDateString = DATE_FORMAT.format(new Date(car.productionDate.getTime()));
+                String productionDateString = DATE_FORMAT.format(new Date(car.getProductionDate().getTime()));
                 // Write the car data to the file
-                bw.write(String.format("%d, %s, %s, %d, %s, %s, %d\n", car.id, car.manufacturer, car.model,
-                        car.price, productionDateString, car.fuelType.toString(), car.horsepower));
+                bw.write(String.format("%d, %s, %s, %d, %s, %s, %d\n", car.getId(), car.getManufacturer(), car.getModel(),
+                        car.getPrice(), productionDateString, car.getFuelType().toString(), car.getHorsepower()));
             }
         } catch (IOException e) {
             throw new BusinessException(e.getMessage(), "writeCars");

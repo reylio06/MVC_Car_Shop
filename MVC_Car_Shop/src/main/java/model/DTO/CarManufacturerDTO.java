@@ -1,9 +1,9 @@
 package model.DTO;
 
 public class CarManufacturerDTO {
-    int id;
-    String model;
-    long price;
+    private int id;
+    private String model;
+    private long price;
 
     public CarManufacturerDTO(int id, String model, long price) {
         this.id = id;
@@ -12,6 +12,7 @@ public class CarManufacturerDTO {
     }
 
     // Override toString method to provide a formatted string representation of the CarManufacturerDTO object
+    @Override
     public String toString() {
         return "Car ID: " + id +
                 ", Model: " + model +

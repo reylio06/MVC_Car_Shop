@@ -1,10 +1,10 @@
 package model.DTO;
 
 public class CarDTO {
-    int id;
-    String manufacturer;
-    String model;
-    long price;
+    private int id;
+    private String manufacturer;
+    private String model;
+    private long price;
 
     public CarDTO(int id, String manufacturer, String model, long price) {
         this.id = id;

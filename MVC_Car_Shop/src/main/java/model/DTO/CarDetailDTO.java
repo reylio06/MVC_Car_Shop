@@ -6,13 +6,13 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class CarDetailDTO {
-    int id;
-    String manufacturer;
-    String model;
-    long price;
-    Timestamp productionDate;
-    FuelType fuelType;
-    int horsepower;
+    private int id;
+    private String manufacturer;
+    private String model;
+    private long price;
+    private Timestamp productionDate;
+    private FuelType fuelType;
+    private int horsepower;
 
     public CarDetailDTO(int id, String manufacturer, String model, long price, Timestamp productionDate,
                         FuelType fuelType, int horsepower) {
