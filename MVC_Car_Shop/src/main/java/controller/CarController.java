@@ -1,5 +1,6 @@
 package controller;
 
+import controller.DAO.CarDAOSingleton;
 import exceptions.BusinessException;
 import controller.DAO.CarDAO;
 import model.DTO.CarDTO;
@@ -35,7 +36,9 @@ public class CarController {
     public CarController() throws BusinessException {
         this.carDAO = new CarDAO();
         // Load cars from the CSV file using CarDAO
-        this.cars = carDAO.readCars();
+        // this.cars = carDAO.readCars();
+        // Load cars from CSV file using CarDAOSingleton
+        this.cars = CarDAOSingleton.getInstance().readCars();
     }
 
     // Add a new car
@@ -56,19 +59,19 @@ public class CarController {
         }
 
         System.out.println("Enter car details:");
-        System.out.print("Manufacturer: ");
+        System.out.println("Manufacturer: ");
         manufacturer = scanner.nextLine();
-        System.out.print("Model: ");
+        System.out.println("Model: ");
         model = scanner.nextLine();
 
         try {
-            System.out.print("Price: ");
+            System.out.println("Price: ");
             price = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
             throw new BusinessException("Price must be a valid long value.", "addCar");
         }
 
-        System.out.print("Production Date (DD.MM.YYYY): ");
+        System.out.println("Production Date (DD.MM.YYYY): ");
         //scanner.nextLine(); // Consume newline character
         productionDateString = scanner.nextLine();
 
@@ -86,7 +89,7 @@ public class CarController {
             LOGGER.info("Invalid date format. Please use the format DD.MM.YYYY.");
         }
 
-        System.out.print("Fuel Type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
+        System.out.println("Fuel Type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
         fuelType = FuelType.valueOf(scanner.nextLine().toUpperCase());
 
         try {
@@ -98,10 +101,12 @@ public class CarController {
 
         Car newCar = new Car(vehicleId, manufacturer, model, price, productionDate, fuelType, horsepower);
         cars.add(newCar);
-        carDAO.writeCars(cars);
+
+        // Basic implementation
+        // carDAO.writeCars(cars);
 
         // Singleton implementation
-        // CarDAOSingleton.getInstance().writeCars(cars);
+        CarDAOSingleton.getInstance().writeCars(cars);
 
         LOGGER.info("New car added successfully.");
     }
@@ -240,7 +245,10 @@ public class CarController {
             if (cars.get(i).getId() == oldID) {
                 // Update the car with the new details
                 cars.set(i, updatedCar);
-                carDAO.writeCars(cars);
+                // Basic implementation
+                // carDAO.writeCars(cars);
+                // Singleton implementation
+                CarDAOSingleton.getInstance().writeCars(cars);
                 return;
             }
         }
@@ -249,7 +257,10 @@ public class CarController {
     // Delete a car
     private void deleteCarByID(int carId) throws BusinessException{
         cars.removeIf(car -> car.getId() == carId);
-        carDAO.writeCars(cars);
+        // Basic implementation
+        // carDAO.writeCars(cars);
+        // Singleton implementation
+        CarDAOSingleton.getInstance().writeCars(cars);
     }
 
     public String deleteCar() throws BusinessException {
