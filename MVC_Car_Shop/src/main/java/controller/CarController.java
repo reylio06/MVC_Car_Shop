@@ -56,19 +56,19 @@ public class CarController {
         }
 
         System.out.println("Enter car details:");
-        System.out.print("Manufacturer: ");
+        System.out.println("Manufacturer: ");
         manufacturer = scanner.nextLine();
-        System.out.print("Model: ");
+        System.out.println("Model: ");
         model = scanner.nextLine();
 
         try {
-            System.out.print("Price: ");
+            System.out.println("Price: ");
             price = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
             throw new BusinessException("Price must be a valid long value.", "addCar");
         }
 
-        System.out.print("Production Date (DD.MM.YYYY): ");
+        System.out.println("Production Date (DD.MM.YYYY): ");
         //scanner.nextLine(); // Consume newline character
         productionDateString = scanner.nextLine();
 
@@ -86,7 +86,7 @@ public class CarController {
             LOGGER.info("Invalid date format. Please use the format DD.MM.YYYY.");
         }
 
-        System.out.print("Fuel Type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
+        System.out.println("Fuel Type (GASOLINE, DIESEL, HYBRID, ELECTRIC): ");
         fuelType = FuelType.valueOf(scanner.nextLine().toUpperCase());
 
         try {
