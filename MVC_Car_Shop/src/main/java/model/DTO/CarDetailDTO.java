@@ -43,6 +43,10 @@ public class CarDetailDTO {
         return dateFormat.format(this.productionDate);
     }
 
+    public int getId(){
+        return id;
+    }
+
     public String getManufacturer() {
         return manufacturer;
     }
