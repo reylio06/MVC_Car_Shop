@@ -19,6 +19,6 @@ public class CarDTO {
         return "Car ID: " + id +
                 ", Manufacturer: " + manufacturer +
                 ", Model: " + model +
-                ", Price: " + price;
+                ", Price (€): " + price;
     }
 }
