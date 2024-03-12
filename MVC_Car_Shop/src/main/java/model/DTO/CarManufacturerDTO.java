@@ -16,6 +16,6 @@ public class CarManufacturerDTO {
     public String toString() {
         return "Car ID: " + id +
                 ", Model: " + model +
-                ", Price: " + price;
+                ", Price (€): " + price;
     }
 }
